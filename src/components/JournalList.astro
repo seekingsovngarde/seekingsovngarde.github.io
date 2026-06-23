@@ -1,0 +1,119 @@
+---
+import PostCard from './PostCard.astro';
+import { posts, allTags, toCardProps } from '../data/posts';
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const entries = posts.map((post) => ({
+	tags: post.tags,
+	card: toCardProps(post, lang),
+}));
+---
+
+<div class="journal">
+	<div class="filters" role="group" aria-label={t('blog.title')}>
+		<button class="chip" type="button" data-tag="*" aria-pressed="true">
+			{t('blog.all')}
+		</button>
+		{
+			allTags.map((tag) => (
+				<button class="chip" type="button" data-tag={tag} aria-pressed="false">
+					{tag}
+				</button>
+			))
+		}
+	</div>
+
+	<ul class="posts">
+		{
+			entries.map((entry) => (
+				<li class="posts__item" data-tags={entry.tags.join(' ')}>
+					<PostCard {...entry.card} />
+				</li>
+			))
+		}
+	</ul>
+</div>
+
+<script>
+	// Progressive enhancement: filter cards by tag. Without JS every
+	// post stays visible and the chips are simply inert.
+	const root = document.currentScript?.previousElementSibling;
+	const journal =
+		root instanceof HTMLElement && root.classList.contains('journal')
+			? root
+			: document.querySelector('.journal');
+
+	if (journal) {
+		const chips = journal.querySelectorAll<HTMLButtonElement>('.chip');
+		const items = journal.querySelectorAll<HTMLElement>('.posts__item');
+
+		chips.forEach((chip) => {
+			chip.addEventListener('click', () => {
+				const tag = chip.dataset.tag ?? '*';
+
+				chips.forEach((c) =>
+					c.setAttribute('aria-pressed', String(c === chip)),
+				);
+
+				items.forEach((item) => {
+					const tags = (item.dataset.tags ?? '').split(' ');
+					const show = tag === '*' || tags.includes(tag);
+					item.hidden = !show;
+				});
+			});
+		});
+	}
+</script>
+
+<style>
+	.filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+	}
+
+	.chip {
+		font-family: var(--font-body);
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--muted);
+		background: transparent;
+		border: 1px solid var(--hairline);
+		border-radius: 2px;
+		padding: 0.45rem 0.85rem;
+		cursor: pointer;
+		transition:
+			color 0.25s var(--ease),
+			border-color 0.25s var(--ease),
+			background 0.25s var(--ease),
+			text-shadow 0.25s var(--ease);
+	}
+
+	.chip:hover {
+		color: var(--ice);
+		border-color: var(--hairline-strong);
+		text-shadow: 0 0 10px var(--glow-ice);
+	}
+
+	.chip[aria-pressed='true'] {
+		color: var(--gold);
+		border-color: var(--gold-dim);
+		background: rgba(200, 168, 107, 0.06);
+	}
+
+	.posts {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+		gap: clamp(1rem, 3vw, 1.75rem);
+	}
+
+	.posts__item[hidden] {
+		display: none;
+	}
+</style>

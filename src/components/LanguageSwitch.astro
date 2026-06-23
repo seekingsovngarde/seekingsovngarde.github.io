@@ -1,0 +1,65 @@
+---
+import {
+	languages,
+	getLangFromUrl,
+	localizePath,
+	useTranslations,
+	type Lang,
+} from '../i18n/ui';
+
+const current = getLangFromUrl(Astro.url);
+const t = useTranslations(current);
+const path = Astro.url.pathname;
+
+const codes = Object.keys(languages) as Lang[];
+---
+
+<nav class="lang" aria-label={t('lang.label')}>
+	{
+		codes.map((code, i) => (
+			<>
+				{i > 0 && <span class="sep" aria-hidden="true">/</span>}
+				<a
+					href={localizePath(path, code)}
+					class="lang__link"
+					hreflang={code}
+					aria-current={code === current ? 'true' : undefined}
+				>
+					{code.toUpperCase()}
+				</a>
+			</>
+		))
+	}
+</nav>
+
+<style>
+	.lang {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-body);
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+	}
+
+	.lang__link {
+		color: var(--faint);
+		padding: 0.15rem 0.1rem;
+		transition: color 0.25s var(--ease), text-shadow 0.25s var(--ease);
+	}
+
+	.lang__link:hover {
+		color: var(--ice);
+		text-shadow: 0 0 10px var(--glow-ice);
+	}
+
+	.lang__link[aria-current='true'] {
+		color: var(--gold);
+		text-shadow: 0 0 8px var(--gold-dim);
+	}
+
+	.sep {
+		color: var(--hairline-strong);
+	}
+</style>

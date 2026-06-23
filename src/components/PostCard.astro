@@ -1,0 +1,162 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+
+interface Props {
+	title: string;
+	description: string;
+	href: string;
+	tags?: string[];
+	date?: string | Date;
+}
+
+const { title, description, href, tags = [], date } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+let dateLabel: string | undefined;
+let dateISO: string | undefined;
+if (date) {
+	const d = date instanceof Date ? date : new Date(date);
+	if (!Number.isNaN(d.getTime())) {
+		dateISO = d.toISOString();
+		dateLabel = new Intl.DateTimeFormat(lang, {
+			day: '2-digit',
+			month: 'long',
+			year: 'numeric',
+		}).format(d);
+	}
+}
+---
+
+<article class="card">
+	<a class="card__link" href={href}>
+		{
+			dateLabel && (
+				<time class="card__date" datetime={dateISO}>
+					{dateLabel}
+				</time>
+			)
+		}
+
+		<h3 class="card__title">{title}</h3>
+		<p class="card__excerpt">{description}</p>
+
+		{
+			tags.length > 0 && (
+				<ul class="card__tags" aria-label="Tags">
+					{tags.map((tag) => (
+						<li class="tag">{tag}</li>
+					))}
+				</ul>
+			)
+		}
+
+		<span class="card__more">
+			{t('posts.readmore')}
+			<span class="card__arrow" aria-hidden="true">→</span>
+		</span>
+	</a>
+</article>
+
+<style>
+	.card {
+		position: relative;
+		background: linear-gradient(
+			160deg,
+			var(--surface),
+			rgba(16, 19, 22, 0.6)
+		);
+		border: 1px solid var(--hairline);
+		border-radius: 4px;
+		transition:
+			border-color 0.3s var(--ease),
+			transform 0.3s var(--ease),
+			box-shadow 0.3s var(--ease);
+	}
+
+	.card:hover {
+		border-color: var(--gold-dim);
+		transform: translateY(-3px);
+		box-shadow:
+			0 14px 40px -20px rgba(0, 0, 0, 0.8),
+			0 0 0 1px var(--gold-dim);
+	}
+
+	.card__link {
+		display: flex;
+		flex-direction: column;
+		gap: 0.65rem;
+		height: 100%;
+		padding: clamp(1.25rem, 3vw, 1.75rem);
+	}
+
+	.card__date {
+		font-size: 0.7rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--faint);
+	}
+
+	.card__title {
+		font-size: 1.4rem;
+		color: var(--ink);
+		transition: text-shadow 0.3s var(--ease);
+	}
+
+	.card:hover .card__title {
+		text-shadow: 0 0 16px rgba(220, 238, 255, 0.25);
+	}
+
+	.card__excerpt {
+		color: var(--muted);
+		font-size: 0.95rem;
+	}
+
+	/* --- Tags: uppercase skill/quest-category chips --------------- */
+	.card__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 0.25rem;
+	}
+
+	.tag {
+		font-size: 0.66rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--gold);
+		padding: 0.28rem 0.6rem;
+		border: 1px solid var(--gold-dim);
+		border-radius: 2px;
+		background: rgba(200, 168, 107, 0.06);
+	}
+
+	/* --- Read-more affordance ------------------------------------- */
+	.card__more {
+		margin-top: auto;
+		padding-top: 0.5rem;
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--muted);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		transition: color 0.3s var(--ease);
+	}
+
+	.card:hover .card__more {
+		color: var(--ice);
+	}
+
+	.card__arrow {
+		transition: transform 0.3s var(--ease);
+	}
+
+	.card:hover .card__arrow {
+		transform: translateX(4px);
+	}
+</style>

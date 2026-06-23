@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SkyrimDivider from '../../components/SkyrimDivider.astro';
+import JournalList from '../../components/JournalList.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/ui';
+
+const t = useTranslations(getLangFromUrl(Astro.url));
+---
+
+<BaseLayout title={t('blog.title')} description={t('blog.intro')}>
+	<section class="page-head">
+		<h1>{t('blog.title')}</h1>
+		<p class="page-head__intro">{t('blog.intro')}</p>
+	</section>
+
+	<SkyrimDivider />
+
+	<JournalList />
+</BaseLayout>
+
+<style>
+	.page-head {
+		text-align: center;
+		max-width: 46rem;
+		margin-inline: auto;
+	}
+
+	.page-head__intro {
+		margin-top: 1rem;
+		font-size: clamp(1rem, 2.5vw, 1.15rem);
+		color: var(--muted);
+	}
+</style>

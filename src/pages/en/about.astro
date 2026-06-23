@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SkyrimDivider from '../../components/SkyrimDivider.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/ui';
+
+const t = useTranslations(getLangFromUrl(Astro.url));
+
+const disciplines = ['CODING', 'GDR', 'MINIATURE'];
+---
+
+<BaseLayout title={t('about.title')} description={t('about.intro')}>
+	<section class="page-head">
+		<h1>{t('about.title')}</h1>
+		<p class="page-head__intro">{t('about.intro')}</p>
+	</section>
+
+	<SkyrimDivider />
+
+	<article class="prose">
+		<p>
+			Hail, traveller. I'm a software developer by day and a dragon hunter
+			in the small hours. <strong>Seeking Sovngarde</strong> is the journal
+			where I record what I learn along the way: elegant code
+			architectures, tabletop sessions that turn into stories, and
+			miniatures coming to life one thin coat at a time.
+		</p>
+		<p>
+			I believe the three have more in common than it seems: each rewards
+			patience, attention to detail, and the courage to start over when
+			something doesn't sit right. Here I share both the wins and the
+			blunders — because even a critical failure is still a roll of the
+			dice.
+		</p>
+
+		<h2>Disciplines</h2>
+		<ul class="disciplines" aria-label="Disciplines">
+			{disciplines.map((d) => <li class="tag">{d}</li>)}
+		</ul>
+
+		<h2>Where to find me</h2>
+		<p>
+			You'll find my experiments on
+			<a class="link" href="https://github.com" rel="me noopener">GitHub</a>.
+			For a chat about code, dice or brushes, the Tavern doors are always
+			open.
+		</p>
+	</article>
+</BaseLayout>
+
+<style>
+	.page-head {
+		text-align: center;
+		max-width: 46rem;
+		margin-inline: auto;
+	}
+
+	.page-head__intro {
+		margin-top: 1rem;
+		font-size: clamp(1rem, 2.5vw, 1.15rem);
+		color: var(--muted);
+	}
+
+	.prose {
+		max-width: 44rem;
+		margin-inline: auto;
+	}
+
+	.prose p {
+		margin-bottom: 1.25rem;
+		font-size: 1.02rem;
+	}
+
+	.prose strong {
+		color: var(--ink);
+		font-weight: 600;
+	}
+
+	.prose h2 {
+		font-size: 1.4rem;
+		margin-top: 2.5rem;
+		margin-bottom: 1rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.disciplines {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.tag {
+		font-size: 0.66rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--gold);
+		padding: 0.28rem 0.6rem;
+		border: 1px solid var(--gold-dim);
+		border-radius: 2px;
+		background: rgba(200, 168, 107, 0.06);
+	}
+
+	.link {
+		color: var(--gold);
+		border-bottom: 1px solid var(--gold-dim);
+		transition: text-shadow 0.25s var(--ease);
+	}
+
+	.link:hover {
+		text-shadow: 0 0 10px var(--gold-dim);
+	}
+</style>

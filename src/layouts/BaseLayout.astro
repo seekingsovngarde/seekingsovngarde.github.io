@@ -1,0 +1,125 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title, description } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const pageTitle = title ? `${title} — ${t('site.title')}` : t('site.title');
+const pageDescription = description ?? t('site.tagline');
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<title>{pageTitle}</title>
+		<meta name="description" content={pageDescription} />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+		/>
+	</head>
+	<body>
+		<a class="skip-link" href="#main">{t('nav.skip')}</a>
+
+		<!-- Sovngarde aurora / mist backdrop -->
+		<div class="aurora" aria-hidden="true"></div>
+
+		<Header />
+
+		<main id="main" class="container">
+			<slot />
+		</main>
+	</body>
+</html>
+
+<style>
+	.skip-link {
+		position: absolute;
+		left: 50%;
+		top: -3rem;
+		transform: translateX(-50%);
+		background: var(--surface-2);
+		color: var(--ink);
+		padding: 0.5rem 1rem;
+		border: 1px solid var(--gold-dim);
+		border-radius: 3px;
+		z-index: 100;
+		transition: top 0.2s var(--ease);
+	}
+
+	.skip-link:focus {
+		top: 0.75rem;
+	}
+
+	/*
+	 * The backdrop sits fixed behind everything: a deep vignette plus
+	 * two very faint aurora bands (teal + violet) drifting at the top,
+	 * evoking the mists of Sovngarde without stealing contrast.
+	 */
+	.aurora {
+		position: fixed;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background:
+			radial-gradient(
+				120% 80% at 50% -10%,
+				rgba(86, 196, 168, 0.1) 0%,
+				rgba(120, 110, 200, 0.07) 32%,
+				transparent 60%
+			),
+			radial-gradient(
+				90% 60% at 80% 0%,
+				rgba(120, 110, 200, 0.08) 0%,
+				transparent 55%
+			),
+			var(--bg);
+		box-shadow: inset 0 0 18rem 4rem var(--bg-deep);
+	}
+
+	.aurora::after {
+		/* Slow, barely-there shimmer across the upper aurora band. */
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(
+			60% 40% at 50% -5%,
+			rgba(160, 230, 210, 0.08),
+			transparent 70%
+		);
+		opacity: 0.6;
+		animation: drift 24s ease-in-out infinite alternate;
+	}
+
+	@keyframes drift {
+		from {
+			transform: translate3d(-4%, 0, 0) scale(1);
+			opacity: 0.35;
+		}
+		to {
+			transform: translate3d(4%, 0, 0) scale(1.08);
+			opacity: 0.7;
+		}
+	}
+
+	main {
+		padding-block: clamp(2.5rem, 7vw, 5rem);
+		min-height: 60vh;
+	}
+</style>

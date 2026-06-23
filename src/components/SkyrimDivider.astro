@@ -1,0 +1,59 @@
+---
+// Iconic Elder Scrolls divider: a thin horizontal hairline broken
+// at the centre by a small geometric diamond. Purely decorative —
+// built entirely in CSS. Pass `label` to give it a heading role.
+interface Props {
+	label?: string;
+}
+const { label } = Astro.props;
+---
+
+<div
+	class="divider"
+	role={label ? 'separator' : 'presentation'}
+	aria-label={label}
+	aria-hidden={label ? undefined : 'true'}
+>
+	<span class="divider__line"></span>
+	<span class="divider__gem"></span>
+	<span class="divider__line"></span>
+</div>
+
+<style>
+	.divider {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		width: 100%;
+		max-width: 32rem;
+		margin-inline: auto;
+		margin-block: clamp(2rem, 5vw, 3.5rem);
+	}
+
+	.divider__line {
+		flex: 1;
+		height: 1px;
+		background: linear-gradient(
+			to var(--dir, right),
+			transparent,
+			var(--hairline-strong) 30%,
+			var(--gold-dim)
+		);
+	}
+
+	.divider__line:first-child {
+		--dir: left;
+	}
+
+	/* The central diamond: a square rotated 45° with a faint gold glow. */
+	.divider__gem {
+		width: 0.6rem;
+		height: 0.6rem;
+		flex: none;
+		transform: rotate(45deg);
+		background: var(--gold);
+		box-shadow:
+			0 0 10px var(--gold-dim),
+			inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+	}
+</style>

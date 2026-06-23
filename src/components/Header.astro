@@ -1,0 +1,180 @@
+---
+import LanguageSwitch from './LanguageSwitch.astro';
+import {
+	getLangFromUrl,
+	useTranslations,
+	localizePath,
+} from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Nav items resolved to the current locale.
+const items = [
+	{ key: 'nav.home', path: '/' },
+	{ key: 'nav.blog', path: '/blog' },
+	{ key: 'nav.about', path: '/about' },
+] as const;
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const isActive = (path: string) => {
+	const target = localizePath(path, lang).replace(/\/$/, '') || '/';
+	return currentPath === target;
+};
+---
+
+<header class="masthead">
+	<div class="masthead__inner container">
+		<a class="brand" href={localizePath('/', lang)}>
+			<span class="brand__name">{t('site.title')}</span>
+			<span class="brand__tag">{t('site.tagline')}</span>
+		</a>
+
+		<nav class="nav" aria-label="Primary">
+			<ul class="nav__list">
+				{
+					items.map((item) => (
+						<li>
+							<a
+								class="nav__link"
+								href={localizePath(item.path, lang)}
+								aria-current={isActive(item.path) ? 'page' : undefined}
+							>
+								{t(item.key)}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<LanguageSwitch />
+	</div>
+</header>
+
+<style>
+	.masthead {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		background: linear-gradient(
+			to bottom,
+			rgba(16, 19, 22, 0.92),
+			rgba(16, 19, 22, 0.72)
+		);
+		backdrop-filter: blur(8px);
+		border-bottom: 1px solid var(--hairline);
+	}
+
+	.masthead__inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: clamp(1rem, 4vw, 3rem);
+		flex-wrap: wrap;
+		padding-block: 1rem;
+	}
+
+	/* --- Brand ---------------------------------------------------- */
+	.brand {
+		display: flex;
+		flex-direction: column;
+		line-height: 1.1;
+	}
+
+	.brand__name {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 1.25rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: var(--ink);
+		transition: text-shadow 0.3s var(--ease);
+	}
+
+	.brand:hover .brand__name {
+		text-shadow: 0 0 14px var(--glow-ice);
+	}
+
+	.brand__tag {
+		font-size: 0.68rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--faint);
+		margin-top: 0.2rem;
+	}
+
+	/* --- Nav ------------------------------------------------------ */
+	.nav__list {
+		display: flex;
+		align-items: center;
+		gap: clamp(1.2rem, 3vw, 2.6rem);
+	}
+
+	.nav__link {
+		position: relative;
+		display: inline-block;
+		font-size: 0.82rem;
+		font-weight: 600;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--muted);
+		padding: 0.35rem 0;
+		transition: color 0.28s var(--ease), text-shadow 0.28s var(--ease);
+	}
+
+	/* Antique-gold underline that grows from the centre on hover. */
+	.nav__link::after {
+		content: '';
+		position: absolute;
+		left: 50%;
+		bottom: 0;
+		width: 0;
+		height: 1px;
+		background: linear-gradient(
+			to right,
+			transparent,
+			var(--gold),
+			transparent
+		);
+		transform: translateX(-50%);
+		transition: width 0.32s var(--ease);
+	}
+
+	.nav__link:hover,
+	.nav__link:focus-visible {
+		color: var(--ice);
+		text-shadow: 0 0 12px var(--glow-ice);
+	}
+
+	.nav__link:hover::after,
+	.nav__link:focus-visible::after {
+		width: 100%;
+	}
+
+	.nav__link[aria-current='page'] {
+		color: var(--gold);
+	}
+
+	.nav__link[aria-current='page']::after {
+		width: 100%;
+		background: linear-gradient(
+			to right,
+			transparent,
+			var(--gold-dim),
+			transparent
+		);
+	}
+
+	@media (max-width: 640px) {
+		.masthead__inner {
+			justify-content: center;
+			text-align: center;
+		}
+
+		.brand {
+			align-items: center;
+		}
+	}
+</style>

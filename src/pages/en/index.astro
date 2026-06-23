@@ -1,9 +1,9 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import SkyrimDivider from '../components/SkyrimDivider.astro';
-import PostCard from '../components/PostCard.astro';
-import { posts, toCardProps } from '../data/posts';
-import { getLangFromUrl } from '../i18n/ui';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SkyrimDivider from '../../components/SkyrimDivider.astro';
+import PostCard from '../../components/PostCard.astro';
+import { posts, toCardProps } from '../../data/posts';
+import { getLangFromUrl } from '../../i18n/ui';
 
 const lang = getLangFromUrl(Astro.url);
 const latest = posts.slice(0, 3).map((post) => toCardProps(post, lang));
@@ -13,13 +13,13 @@ const latest = posts.slice(0, 3).map((post) => toCardProps(post, lang));
 	<section class="hero">
 		<h1>Seeking Sovngarde</h1>
 		<p class="hero__lead">
-			Un diario su programmazione, giochi di ruolo e pittura di miniature.
+			A journal on programming, tabletop RPGs and miniature painting.
 		</p>
 	</section>
 
-	<SkyrimDivider label="Voci del diario" />
+	<SkyrimDivider label="Journal entries" />
 
-	<section aria-label="Voci del diario">
+	<section aria-label="Journal entries">
 		<ul class="posts">
 			{
 				latest.map((post) => (

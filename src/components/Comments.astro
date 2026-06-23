@@ -1,0 +1,68 @@
+---
+import SkyrimDivider from './SkyrimDivider.astro';
+import { giscus, giscusConfigured } from '../config/comments';
+import { getLangFromUrl, useTranslations } from '../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<section class="comments" aria-label={t('comments.title')}>
+	<SkyrimDivider />
+	<h2 class="comments__title">{t('comments.title')}</h2>
+
+	{
+		giscusConfigured ? (
+			<script
+				src="https://giscus.app/client.js"
+				data-repo={giscus.repo}
+				data-repo-id={giscus.repoId}
+				data-category={giscus.category}
+				data-category-id={giscus.categoryId}
+				data-mapping={giscus.mapping}
+				data-strict="0"
+				data-reactions-enabled={giscus.reactionsEnabled}
+				data-emit-metadata="0"
+				data-input-position={giscus.inputPosition}
+				data-theme={giscus.theme}
+				data-lang={lang}
+				crossorigin="anonymous"
+				async
+				is:inline
+			/>
+		) : (
+			<p class="comments__note">{t('comments.setup')}</p>
+		)
+	}
+</section>
+
+<style>
+	.comments {
+		max-width: 44rem;
+		margin-inline: auto;
+	}
+
+	.comments__title {
+		font-size: 1.4rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		text-align: center;
+		margin-bottom: 1.5rem;
+	}
+
+	.comments__note {
+		text-align: center;
+		font-size: 0.85rem;
+		color: var(--faint);
+		font-style: italic;
+		border: 1px solid var(--hairline);
+		border-radius: 4px;
+		padding: 1.25rem;
+	}
+
+	/* Let the giscus iframe breathe within our dark column. */
+	.comments :global(.giscus),
+	.comments :global(.giscus-frame) {
+		width: 100%;
+	}
+</style>

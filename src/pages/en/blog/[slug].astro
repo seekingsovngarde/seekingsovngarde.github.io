@@ -1,18 +1,19 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PostArticle from '../../../components/PostArticle.astro';
-import { posts } from '../../../data/posts';
+import { getPostsByLang, entrySlug } from '../../../lib/blog';
 
-export function getStaticPaths() {
-	return posts.map((post) => ({
-		params: { slug: post.slug },
-		props: { post },
+export async function getStaticPaths() {
+	const entries = await getPostsByLang('en');
+	return entries.map((entry) => ({
+		params: { slug: entrySlug(entry) },
+		props: { entry },
 	}));
 }
 
-const { post } = Astro.props;
+const { entry } = Astro.props;
 ---
 
-<BaseLayout title={post.en.title} description={post.en.description}>
-	<PostArticle post={post} />
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+	<PostArticle entry={entry} />
 </BaseLayout>

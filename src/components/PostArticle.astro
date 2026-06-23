@@ -1,41 +1,44 @@
 ---
 import SkyrimDivider from './SkyrimDivider.astro';
-import type { Post } from '../data/posts';
+import Comments from './Comments.astro';
+import { render } from 'astro:content';
+import type { BlogEntry } from '../lib/blog';
 import { getLangFromUrl, useTranslations, localizePath } from '../i18n/ui';
 
 interface Props {
-	post: Post;
+	entry: BlogEntry;
 }
 
-const { post } = Astro.props;
+const { entry } = Astro.props;
+const { title, description, tags, date } = entry.data;
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const content = post[lang];
 
-const d = new Date(post.date);
-const dateISO = d.toISOString();
+const { Content } = await render(entry);
+
+const dateISO = date.toISOString();
 const dateLabel = new Intl.DateTimeFormat(lang, {
 	day: '2-digit',
 	month: 'long',
 	year: 'numeric',
-}).format(d);
+}).format(date);
 ---
 
 <article class="post">
 	<header class="post__head">
 		<time class="post__date" datetime={dateISO}>{dateLabel}</time>
-		<h1 class="post__title">{content.title}</h1>
+		<h1 class="post__title">{title}</h1>
 		<ul class="post__tags" aria-label="Tags">
-			{post.tags.map((tag) => <li class="tag">{tag}</li>)}
+			{tags.map((tag) => <li class="tag">{tag}</li>)}
 		</ul>
 	</header>
 
 	<SkyrimDivider />
 
 	<div class="post__body">
-		<p class="post__lead">{content.description}</p>
-		{content.body.map((para) => <p>{para}</p>)}
+		<p class="post__lead">{description}</p>
+		<Content />
 	</div>
 
 	<footer class="post__foot">
@@ -45,6 +48,8 @@ const dateLabel = new Intl.DateTimeFormat(lang, {
 		</a>
 	</footer>
 </article>
+
+<Comments />
 
 <style>
 	.post {
@@ -88,7 +93,7 @@ const dateLabel = new Intl.DateTimeFormat(lang, {
 		background: rgba(200, 168, 107, 0.06);
 	}
 
-	.post__body p {
+	.post__body :global(p) {
 		margin-bottom: 1.35rem;
 		font-size: 1.05rem;
 	}

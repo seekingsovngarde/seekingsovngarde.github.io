@@ -1,13 +1,15 @@
 ---
 import PostCard from './PostCard.astro';
-import { posts, allTags, toCardProps } from '../data/posts';
+import { getPostsByLang, tagsOf, toCardProps } from '../lib/blog';
 import { getLangFromUrl, useTranslations } from '../i18n/ui';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
+const posts = await getPostsByLang(lang);
+const allTags = tagsOf(posts);
 const entries = posts.map((post) => ({
-	tags: post.tags,
+	tags: post.data.tags,
 	card: toCardProps(post, lang),
 }));
 ---

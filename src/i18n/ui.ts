@@ -32,6 +32,8 @@ export const ui = {
 		'post.back': 'Torna al diario',
 		'footer.note': 'Forgiato tra le nebbie di Sovngarde.',
 		'footer.rights': 'Tutti i diritti riservati.',
+		'comments.title': 'Commenti',
+		'comments.setup': 'I commenti non sono ancora configurati.',
 	},
 	en: {
 		'site.title': 'Seeking Sovngarde',
@@ -52,6 +54,8 @@ export const ui = {
 		'post.back': 'Back to the journal',
 		'footer.note': 'Forged in the mists of Sovngarde.',
 		'footer.rights': 'All rights reserved.',
+		'comments.title': 'Comments',
+		'comments.setup': 'Comments are not configured yet.',
 	},
 } as const;
 

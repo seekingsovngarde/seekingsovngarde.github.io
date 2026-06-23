@@ -29,6 +29,9 @@ export const ui = {
 		'blog.all': 'Tutte',
 		'about.title': 'Chi sono',
 		'about.intro': 'Quattro parole sul viandante dietro questo diario.',
+		'post.back': 'Torna al diario',
+		'footer.note': 'Forgiato tra le nebbie di Sovngarde.',
+		'footer.rights': 'Tutti i diritti riservati.',
 	},
 	en: {
 		'site.title': 'Seeking Sovngarde',
@@ -46,6 +49,9 @@ export const ui = {
 		'blog.all': 'All',
 		'about.title': 'About',
 		'about.intro': 'A few words on the wanderer behind this journal.',
+		'post.back': 'Back to the journal',
+		'footer.note': 'Forged in the mists of Sovngarde.',
+		'footer.rights': 'All rights reserved.',
 	},
 } as const;
 

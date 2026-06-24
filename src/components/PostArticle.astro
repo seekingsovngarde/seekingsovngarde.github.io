@@ -98,6 +98,39 @@ const dateLabel = new Intl.DateTimeFormat(lang, {
 		font-size: 1.05rem;
 	}
 
+	.post__body :global(img) {
+		display: block;
+		width: auto;
+		max-width: 100%;
+		height: auto;
+		margin: 1.75rem auto;
+		border-radius: 4px;
+	}
+
+	.post__body :global(ul),
+	.post__body :global(ol) {
+		margin: 0 0 1.35rem;
+		padding-left: 1.6rem;
+	}
+
+	.post__body :global(ul) {
+		list-style: disc;
+	}
+
+	.post__body :global(ol) {
+		list-style: decimal;
+	}
+
+	.post__body :global(li) {
+		margin-bottom: 0.5rem;
+		font-size: 1.05rem;
+		line-height: 1.65;
+	}
+
+	.post__body :global(li::marker) {
+		color: var(--gold);
+	}
+
 	.post__lead {
 		color: var(--ink);
 		font-size: 1.2rem !important;

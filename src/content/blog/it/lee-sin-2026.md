@@ -13,7 +13,7 @@ Con questo gioco avevo smesso, per due motivi principali:
 1. Il tempo: consuma una grandissima quantità di tempo, e dovevo concludere la triennale (e poi decisi anche di fare la magistrale).
 2. La tossicità intrinseca della community: questo è un punto risaputo, LoL ha la community più tossica di qualsiasi gioco online.
 
-![alt text](image.png)
+![Lee Sin](lee-sin-gameplay.png)
 
 Tuttavia mi mancava, rigiocandoci sono emersi i ricordi di quando distruggevo la SoloQ con il mio Lee Sin. Ho anche rivisto i vecchi video che avevo fatto, e niente ci sono ricaduto.
 
@@ -21,7 +21,7 @@ Ho ripreso a giocare, seppure le meccaniche principale del MOBA sono le stesse, 
 
 ## Rune
 
-![Lee Sin Runes](image-2.png)
+![Pagina rune di Lee Sin](lee-sin-rune.png)
 
 Queste non sono cambiate dall'ultima volta che giocavo Lee Sin
 
@@ -64,7 +64,7 @@ La cosa strana rispetto a qundo avevo lasciato l'herald è che ora ci si può en
 
 ### Voidgrub
 
-![Void Grubs](image-1.png)
+![Le Larve del Vuoto (Voidgrubs) nella fossa dell'Herald](voidgrubs.png)
 
 Questo è un campo relativamente nuovo per me, in italiano si chiamano le “Larve del Vuoto” (Voidgrubs). Sono mostri neutrali che compaiono nella fossa dell’Herald/Nashor al minuto ~8:00 (non 6:00).
 

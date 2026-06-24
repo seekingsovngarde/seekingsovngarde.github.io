@@ -49,6 +49,18 @@ const dateLabel = new Intl.DateTimeFormat(lang, {
 	</footer>
 </article>
 
+<div class="lightbox" data-lightbox hidden aria-hidden="true">
+	<button
+		class="lightbox__close"
+		type="button"
+		data-lightbox-close
+		aria-label={lang === 'it' ? 'Chiudi' : 'Close'}
+	>
+		×
+	</button>
+	<img class="lightbox__img" data-lightbox-img src="" alt="" />
+</div>
+
 <Comments />
 
 <style>
@@ -105,6 +117,14 @@ const dateLabel = new Intl.DateTimeFormat(lang, {
 		height: auto;
 		margin: 1.75rem auto;
 		border-radius: 4px;
+		cursor: zoom-in;
+		transition: filter 0.25s var(--ease);
+	}
+
+	.post__body :global(img:hover),
+	.post__body :global(img:focus-visible) {
+		filter: brightness(1.08);
+		outline: none;
 	}
 
 	.post__body :global(ul),
@@ -159,4 +179,136 @@ const dateLabel = new Intl.DateTimeFormat(lang, {
 		color: var(--ice);
 		text-shadow: 0 0 10px var(--glow-ice);
 	}
+
+	.lightbox {
+		position: fixed;
+		inset: 0;
+		z-index: 100;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: clamp(1rem, 4vw, 3rem);
+		background: rgba(8, 10, 14, 0.88);
+		backdrop-filter: blur(4px);
+		cursor: zoom-out;
+		opacity: 0;
+		transition: opacity 0.25s var(--ease);
+	}
+
+	.lightbox[hidden] {
+		display: none;
+	}
+
+	.lightbox.is-open {
+		opacity: 1;
+	}
+
+	.lightbox__img {
+		max-width: 90vw;
+		max-height: 90vh;
+		width: auto;
+		height: auto;
+		border-radius: 4px;
+		box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+		cursor: default;
+		transform: scale(0.97);
+		transition: transform 0.25s var(--ease);
+	}
+
+	.lightbox.is-open .lightbox__img {
+		transform: scale(1);
+	}
+
+	.lightbox__close {
+		position: absolute;
+		top: clamp(0.75rem, 2vw, 1.5rem);
+		right: clamp(0.75rem, 2vw, 1.5rem);
+		width: 2.75rem;
+		height: 2.75rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.8rem;
+		line-height: 1;
+		color: var(--ink);
+		background: transparent;
+		border: 1px solid var(--hairline);
+		border-radius: 2px;
+		cursor: pointer;
+		transition: color 0.25s var(--ease), border-color 0.25s var(--ease);
+	}
+
+	.lightbox__close:hover {
+		color: var(--ice);
+		border-color: var(--hairline-strong);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.lightbox,
+		.lightbox__img {
+			transition: none;
+		}
+	}
 </style>
+
+<script>
+	// Click a post image to view it full-size in an overlay.
+	// Progressive enhancement: without JS the images are plain <img>.
+	const lightbox = document.querySelector<HTMLElement>('[data-lightbox]');
+	const lightboxImg =
+		document.querySelector<HTMLImageElement>('[data-lightbox-img]');
+	const closeBtn = document.querySelector<HTMLButtonElement>(
+		'[data-lightbox-close]',
+	);
+	const images = document.querySelectorAll<HTMLImageElement>('.post__body img');
+
+	if (lightbox && lightboxImg && closeBtn && images.length) {
+		let lastFocused: HTMLElement | null = null;
+
+		const open = (img: HTMLImageElement) => {
+			lastFocused = document.activeElement as HTMLElement;
+			lightboxImg.src = img.currentSrc || img.src;
+			lightboxImg.alt = img.alt;
+			lightbox.hidden = false;
+			lightbox.setAttribute('aria-hidden', 'false');
+			document.body.style.overflow = 'hidden';
+			// Next frame so the fade-in transition runs from opacity 0.
+			requestAnimationFrame(() => lightbox.classList.add('is-open'));
+			closeBtn.focus();
+		};
+
+		const close = () => {
+			lightbox.classList.remove('is-open');
+			lightbox.setAttribute('aria-hidden', 'true');
+			document.body.style.overflow = '';
+			const finish = () => {
+				lightbox.hidden = true;
+				lightboxImg.src = '';
+				lightbox.removeEventListener('transitionend', finish);
+			};
+			lightbox.addEventListener('transitionend', finish);
+			lastFocused?.focus();
+		};
+
+		images.forEach((img) => {
+			img.setAttribute('role', 'button');
+			img.setAttribute('tabindex', '0');
+			img.addEventListener('click', () => open(img));
+			img.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					open(img);
+				}
+			});
+		});
+
+		closeBtn.addEventListener('click', close);
+		// Click on the backdrop (but not the image itself) closes.
+		lightbox.addEventListener('click', (e) => {
+			if (e.target !== lightboxImg) close();
+		});
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !lightbox.hidden) close();
+		});
+	}
+</script>
